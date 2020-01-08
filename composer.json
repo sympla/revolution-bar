@@ -1,5 +1,5 @@
 {
-    "name": "root/html",
+    "name": "revolution-bar",
     "description": "Sdk para integração SDK RdStation",
     "require": {
         "guzzlehttp/guzzle": "^6.5"

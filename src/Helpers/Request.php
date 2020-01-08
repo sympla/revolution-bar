@@ -1,8 +1,10 @@
 <?php
 
-namespace RDStation\Services;
+namespace RDStation\Helpers;
 
 use Psr\Http\Message\ResponseInterface;
+use RDStation\Exception\ContentTypeInvalid;
+use RDStation\Exception\RequestFailed;
 
 class Request
 {
@@ -10,10 +12,7 @@ class Request
      * @var \GuzzleHttp\Client
      */
     private $httpClient;
-    /**
-     * @var bool
-     */
-    private $exceptionIfError;
+
     public function __construct(array $header)
     {
         $this->httpClient = new GuzzleHttp\Client([
@@ -27,7 +26,9 @@ class Request
     /**
      * @param $endpoint
      * @return array|mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ContentTypeInvalid
+     * @throws RequestFailed
+     * @throws \JsonException
      */
     public function get($endpoint)
     {
@@ -38,7 +39,9 @@ class Request
      * @param $endpoint
      * @param array $data
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws ContentTypeInvalid
+     * @throws RequestFailed
+     * @throws \JsonException
      */
     public function post($endpoint, array $data = [])
     {
@@ -49,7 +52,9 @@ class Request
      * @param $endpoint
      * @param array $data
      * @return array|mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws RequestFailed
+     * @throws \JsonException
+     * @throws ContentTypeInvalid
      */
     public function put($endpoint, array $data = [])
     {
@@ -59,57 +64,55 @@ class Request
     /**
      * @param $endpoint
      * @return array|mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws RDStation\Exception\ContentTypeInvalid
+     * @throws RDStation\Exception\RequestFailed
+     * @throws \JsonException
+     * @throws ContentTypeInvalid
+     * @throws RequestFailed
      */
     public function delete($endpoint)
     {
         return $this->call('DELETE', $endpoint);
     }
 
+
     /**
      * @param $method
      * @param $endpoint
      * @param array $options
-     * @return array|mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return mixed
+     * @throws ContentTypeInvalid
+     * @throws RequestFailed
+     * @throws \JsonException
      */
     private function call($method, $endpoint, array $options = [])
     {
-        try {
-            $request = $this->httpClient->request($method, $endpoint, $options);
+        $response = $this->httpClient->request($method, $endpoint, $options);
+        $this->validateResponse($response);
 
-            if ($request->getStatusCode() <= 200 && $request->getStatusCode() >= 299) {
-                throw new Exception\RequestFailed();
-            }
+        $content = $response->getBody()->getContents();
+        $result = json_decode($content, true);
 
-            $content = $request->getBody()->getContents();
-            $result = json_decode($content, true);
-            $this->printLn($result,true);
-        } catch (\Exception $e) {
-            $this->printLn($e->getMessage());
-            $result = ['success' => false, 'error' => '1 - Erro ao processar ! ' . $e->getMessage()];
+        if (json_last_error() != JSON_ERROR_NONE) {
+            throw new \JsonException();
         }
-        $this->printLn($result);
+
         return $result;
     }
 
+    /**
+     * @param ResponseInterface $response
+     * @throws ContentTypeInvalid
+     * @throws RequestFailed
+     */
     private function validateResponse(ResponseInterface $response)
     {
         if ($response->getStatusCode() <= 200 && $response->getStatusCode() >= 299) {
-            throw new Exception\RequestFailed();
+            throw new RequestFailed();
         }
 
         if ($response->getHeader('content-type') !== 'application/json') {
-            throw new Exception\ContentTypeInvalid();
+            throw new ContentTypeInvalid();
         }
-
-    }
-
-    private function printLn($content, $pre = false)
-    {
-        if($pre)
-            echo "<pre>";
-        print_r($content);
-        exit;
     }
 }

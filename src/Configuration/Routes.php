@@ -6,6 +6,6 @@ namespace RDStation\Configuration;
 
 class Routes
 {
-    private CONST PREFIX = '';
-    const AUTH = self::PREFIX . '/auth/dialog';
+    const AUTHENTICATION = '/auth/dialog';
+    const AUTHORIZATION  = '/auth/token';
 }
