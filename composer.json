@@ -3,6 +3,7 @@
     "description": "Sdk para integração SDK RdStation",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "version": "dev",
     "require": {
         "guzzlehttp/guzzle": "^6.5"
     },
