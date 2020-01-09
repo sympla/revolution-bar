@@ -18,9 +18,6 @@ class BuildUrl
         if (! static::routeExists($route)) {
             throw new \RDStation\Exception\InvalidRouteException("Invalid route: " . $route);
         }
-
-
-        ltrim()
         return sprintf("%s/%s", trim(Http::BASE_URL, "/"), trim($route, "/"));
     }
 
