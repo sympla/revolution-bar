@@ -1,9 +1,9 @@
 {
     "name": "revolution-bar",
     "description": "Sdk para integração SDK RdStation",
-    "minimum-stability": "dev",
+    "minimum-stability": "RC",
     "prefer-stable": true,
-    "version": "dev",
+    "version": "0.0.1",
     "require": {
         "guzzlehttp/guzzle": "^6.5"
     },
