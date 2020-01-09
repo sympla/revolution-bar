@@ -20,7 +20,8 @@ class BuildUrl
         }
 
 
-        return sprintf("%s/%s", Http::BASE_URL, $route);
+        ltrim()
+        return sprintf("%s/%s", trim(Http::BASE_URL, "/"), trim($route, "/"));
     }
 
     /**
