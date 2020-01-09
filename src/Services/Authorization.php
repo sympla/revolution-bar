@@ -32,14 +32,15 @@ class Authorization
     /**
      * Authentication constructor.
      * @param string $clientId
-     * @param string $code
      * @param string $clientSecret
+     * @param string $code
      */
-    public function __construct(string $clientId, string $code, string $clientSecret)
+    public function __construct(string $clientId, string $clientSecret, string $code)
     {
-        $this->request     = new Request([]);
-        $this->code    = $clientId;
+        $this->request = new Request([]);
+        $this->code    = $code;
         $this->clientSecret = $clientSecret;
+        $this->clientId = $clientId;
     }
 
     /**
@@ -55,7 +56,8 @@ class Authorization
         $url = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
         $parameters = [
             'client_id' => $this->clientId,
-            'redirect_url' => $this->callbackUrl
+            'client_secret' => $this->callbackUrl,
+            'code' => $this->code
         ];
 
         return $this->generateAuthenticateResponse(
