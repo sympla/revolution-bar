@@ -1,19 +1,15 @@
 <?php
-
 namespace RDStation\Helpers;
-
 use Psr\Http\Message\ResponseInterface;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
 use GuzzleHttp\Client;
-
 class Request
 {
     /**
      * @var \GuzzleHttp\Client
      */
     private $httpClient;
-
     public function __construct(array $header)
     {
         $this->httpClient = new Client([
@@ -23,7 +19,6 @@ class Request
             'headers' => $header
         ]);
     }
-
     /**
      * @param $endpoint
      * @return array|mixed
@@ -35,7 +30,6 @@ class Request
     {
         return $this->call('GET', $endpoint);
     }
-
     /**
      * @param $endpoint
      * @param array $data
@@ -48,7 +42,6 @@ class Request
     {
         return $this->call('POST', $endpoint, ['json' => $data]);
     }
-
     /**
      * @param $endpoint
      * @param array $data
@@ -61,7 +54,6 @@ class Request
     {
         return $this->call('PUT', $endpoint, ['json' => $data]);
     }
-
     /**
      * @param $endpoint
      * @return array|mixed
@@ -75,8 +67,6 @@ class Request
     {
         return $this->call('DELETE', $endpoint);
     }
-
-
     /**
      * @param $method
      * @param $endpoint
@@ -90,17 +80,13 @@ class Request
     {
         $response = $this->httpClient->request($method, $endpoint, $options);
         $this->validateResponse($response);
-
         $content = $response->getBody()->getContents();
         $result = json_decode($content, true);
-
         if (json_last_error() != JSON_ERROR_NONE) {
             throw new \JsonException();
         }
-
         return $result;
     }
-
     /**
      * @param ResponseInterface $response
      * @throws ContentTypeInvalid
@@ -110,10 +96,6 @@ class Request
     {
         if ($response->getStatusCode() <= 200 && $response->getStatusCode() >= 299) {
             throw new RequestFailed();
-        }
-
-        if ($response->getHeader('content-type') !== 'application/json') {
-            throw new ContentTypeInvalid();
         }
     }
 }

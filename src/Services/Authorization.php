@@ -1,34 +1,25 @@
 <?php
-
 namespace RDStation\Services;
-
 use RDStation\Configuration\Routes;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
 use RDStation\Helpers\Request;
 use RDStation\Helpers\BuildUrl;
-
 class Authorization
 {
     /** @var Request $request */
     protected $request;
-
     /** @var string $clientId */
     protected $clientId;
-
     /** @var string $callbackUrl */
     protected $callbackUrl;
-
     /** @var RDStationConfiguration $configuration */
     protected $configuration;
-
     /** @var string */
     private $code;
-
     /** @var string $clientSecret */
     private $clientSecret;
-
     /**
      * Authentication constructor.
      * @param string $clientId
@@ -42,7 +33,6 @@ class Authorization
         $this->clientSecret = $clientSecret;
         $this->clientId = $clientId;
     }
-
     /**
      * @return AuthorizationResponse
      * @throws \JsonException
@@ -56,15 +46,13 @@ class Authorization
         $url = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
         $parameters = [
             'client_id' => $this->clientId,
-            'client_secret' => $this->callbackUrl,
+            'client_secret' => $this->clientSecret,
             'code' => $this->code
         ];
-
         return $this->generateAuthenticateResponse(
             $this->request->post(sprintf('%s', $url), $parameters)
         );
     }
-
     /**
      * @param array $response
      * @return AuthorizationResponse
@@ -74,7 +62,7 @@ class Authorization
         return new AuthorizationResponse(
             $response['access_token'],
             $response['refresh_token'],
-            $response['expire_in']
+            $response['expires_in']
         );
     }
 }
