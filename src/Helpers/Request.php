@@ -5,6 +5,7 @@ namespace RDStation\Helpers;
 use Psr\Http\Message\ResponseInterface;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
+use GuzzleHttp\Client;
 
 class Request
 {
@@ -15,7 +16,7 @@ class Request
 
     public function __construct(array $header)
     {
-        $this->httpClient = new GuzzleHttp\Client([
+        $this->httpClient = new Client([
             'verify' => false,
             'connect_timeout' => 6,
             'timeout' => 0,

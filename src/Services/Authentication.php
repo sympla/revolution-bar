@@ -4,6 +4,7 @@
 namespace RDStation\Services;
 
 use RDStation\Configuration\Routes;
+use RDStation\Helpers\BuildUrl;
 
 class Authentication
 {
@@ -30,7 +31,7 @@ class Authentication
      */
     public function getUrlAuthentication()
     {
-        $url = \BuidUrl::getUrlByRoute(Routes::AUTHENTICATION);
+        $url = BuildUrl::getUrlByRoute(Routes::AUTHENTICATION);
         $parameters = [
             'client_id' => $this->clientId,
             'redirect_url' => $this->redirectUrl

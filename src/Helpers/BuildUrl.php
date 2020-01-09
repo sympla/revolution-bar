@@ -1,10 +1,11 @@
 <?php
 
+namespace RDStation\Helpers;
 
 use RDStation\Configuration\Http;
 use RDStation\Configuration\Routes;
 
-class BuidUrl
+class BuildUrl
 {
     /**
      * @param string $route
@@ -29,7 +30,7 @@ class BuidUrl
      */
     private static function routeExists(string $route)
     {
-        $reflection = new ReflectionClass(Routes::class);
+        $reflection = new \ReflectionClass(Routes::class);
         foreach ($reflection->getConstants() as $constant) {
             if ($route == $constant) {
                 return true;

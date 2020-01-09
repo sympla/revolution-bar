@@ -7,8 +7,7 @@ use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
 use RDStation\Helpers\Request;
-
-require_once __DIR__ . "/../vendor/autoload.php";
+use RDStation\Helpers\BuildUrl;
 
 class Authorization
 {
@@ -53,7 +52,7 @@ class Authorization
      */
     public function getAccessToken()
     {
-        $url = \BuidUrl::getUrlByRoute(Routes::AUTHORIZATION);
+        $url = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
         $parameters = [
             'client_id' => $this->clientId,
             'redirect_url' => $this->callbackUrl
