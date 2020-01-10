@@ -1,23 +1,21 @@
 <?php
+
 namespace RDStation\Helpers;
+
 use Psr\Http\Message\ResponseInterface;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
 use GuzzleHttp\Client;
+
 class Request
 {
     /**
      * @var \GuzzleHttp\Client
      */
     private $httpClient;
-    public function __construct(array $header)
+    public function __construct(Client $client)
     {
-        $this->httpClient = new Client([
-            'verify' => false,
-            'connect_timeout' => 6,
-            'timeout' => 0,
-            'headers' => $header
-        ]);
+        $this->httpClient = $client;
     }
     /**
      * @param $endpoint
@@ -26,7 +24,7 @@ class Request
      * @throws RequestFailed
      * @throws \JsonException
      */
-    public function get($endpoint)
+    public function get($endpoint) : array
     {
         return $this->call('GET', $endpoint);
     }
@@ -38,7 +36,7 @@ class Request
      * @throws RequestFailed
      * @throws \JsonException
      */
-    public function post($endpoint, array $data = [])
+    public function post($endpoint, array $data = []) : array
     {
         return $this->call('POST', $endpoint, ['json' => $data]);
     }
@@ -50,23 +48,11 @@ class Request
      * @throws \JsonException
      * @throws ContentTypeInvalid
      */
-    public function put($endpoint, array $data = [])
+    public function put($endpoint, array $data = []) : array
     {
         return $this->call('PUT', $endpoint, ['json' => $data]);
     }
-    /**
-     * @param $endpoint
-     * @return array|mixed
-     * @throws RDStation\Exception\ContentTypeInvalid
-     * @throws RDStation\Exception\RequestFailed
-     * @throws \JsonException
-     * @throws ContentTypeInvalid
-     * @throws RequestFailed
-     */
-    public function delete($endpoint)
-    {
-        return $this->call('DELETE', $endpoint);
-    }
+
     /**
      * @param $method
      * @param $endpoint
@@ -76,7 +62,7 @@ class Request
      * @throws RequestFailed
      * @throws \JsonException
      */
-    private function call($method, $endpoint, array $options = [])
+    public function call($method, $endpoint, array $options = []) : array
     {
         $response = $this->httpClient->request($method, $endpoint, $options);
         $this->validateResponse($response);
@@ -94,7 +80,7 @@ class Request
      */
     private function validateResponse(ResponseInterface $response)
     {
-        if ($response->getStatusCode() <= 200 && $response->getStatusCode() >= 299) {
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
             throw new RequestFailed();
         }
     }

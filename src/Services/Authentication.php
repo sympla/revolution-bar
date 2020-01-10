@@ -25,7 +25,7 @@ class Authentication
      * @return string
      * @throws \RDStation\Exception\InvalidRouteException
      */
-    public function getUrlAuthentication()
+    public function getUrlAuthentication() : string
     {
         $url = BuildUrl::getUrlByRoute(Routes::AUTHENTICATION);
         $parameters = [

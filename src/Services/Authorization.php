@@ -1,25 +1,26 @@
 <?php
 namespace RDStation\Services;
+
 use RDStation\Configuration\Routes;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
 use RDStation\Helpers\Request;
 use RDStation\Helpers\BuildUrl;
+use GuzzleHttp\Client;
+
 class Authorization
 {
-    /** @var Request $request */
-    protected $request;
+
     /** @var string $clientId */
     protected $clientId;
-    /** @var string $callbackUrl */
-    protected $callbackUrl;
-    /** @var RDStationConfiguration $configuration */
-    protected $configuration;
+
     /** @var string */
     private $code;
+
     /** @var string $clientSecret */
     private $clientSecret;
+
     /**
      * Authentication constructor.
      * @param string $clientId
@@ -28,11 +29,11 @@ class Authorization
      */
     public function __construct(string $clientId, string $clientSecret, string $code)
     {
-        $this->request = new Request([]);
         $this->code    = $code;
         $this->clientSecret = $clientSecret;
         $this->clientId = $clientId;
     }
+
     /**
      * @return AuthorizationResponse
      * @throws \JsonException
@@ -41,7 +42,7 @@ class Authorization
      * @throws ContentTypeInvalid
      * @throws \RDStation\Exception\InvalidRouteException
      */
-    public function getAccessToken()
+    public function getAccessToken() : AuthorizationResponse
     {
         $url = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
         $parameters = [
@@ -49,20 +50,39 @@ class Authorization
             'client_secret' => $this->clientSecret,
             'code' => $this->code
         ];
-        return $this->generateAuthenticateResponse(
-            $this->request->post(sprintf('%s', $url), $parameters)
+
+
+        return $this->generateAuthorizationResponse(
+            $this->getInstanceRequest()->post(sprintf('%s', $url), $parameters)
         );
     }
+
     /**
      * @param array $response
      * @return AuthorizationResponse
      */
-    private function generateAuthenticateResponse(array $response)
+    protected function generateAuthorizationResponse(array $response) : AuthorizationResponse
     {
         return new AuthorizationResponse(
             $response['access_token'],
             $response['refresh_token'],
             $response['expires_in']
+        );
+    }
+
+    /**
+     * 
+     * @return Request;
+     */
+    public function getInstanceRequest() : Request
+    {
+        return new Request(
+            new Client([
+                'verify' => false,
+                'connect_timeout' => 6,
+                'timeout' => 0,
+                'headers' => []
+            ])
         );
     }
 }
