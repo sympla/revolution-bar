@@ -76,6 +76,6 @@ class AuthenticateResponseTest extends TestCase
     public function testGetExpireIn()
     {
         $expectedGetExpireIn = 199;
-        $this->assertEquals($expectedGetExpireIn, 199);
+        $this->assertEquals($expectedGetExpireIn, $this->authorizationResponse->getExpireIn());
     }
 }
