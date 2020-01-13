@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /*
  * This file is part of the php-code-coverage package.
  *
@@ -7,9 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace SebastianBergmann\CodeCoverage\Report\Xml;
 
-abstract class Node
+class Node
 {
     /**
      * @var \DOMDocument
@@ -26,12 +27,23 @@ abstract class Node
         $this->setContextNode($context);
     }
 
-    public function getDom(): \DOMDocument
+    protected function setContextNode(\DOMElement $context)
+    {
+        $this->dom         = $context->ownerDocument;
+        $this->contextNode = $context;
+    }
+
+    public function getDom()
     {
         return $this->dom;
     }
 
-    public function getTotals(): Totals
+    protected function getContextNode()
+    {
+        return $this->contextNode;
+    }
+
+    public function getTotals()
     {
         $totalsContainer = $this->getContextNode()->firstChild;
 
@@ -47,7 +59,7 @@ abstract class Node
         return new Totals($totalsContainer);
     }
 
-    public function addDirectory(string $name): Directory
+    public function addDirectory($name)
     {
         $dirNode = $this->getDom()->createElementNS(
             'https://schema.phpunit.de/coverage/1.0',
@@ -60,7 +72,7 @@ abstract class Node
         return new Directory($dirNode);
     }
 
-    public function addFile(string $name, string $href): File
+    public function addFile($name, $href)
     {
         $fileNode = $this->getDom()->createElementNS(
             'https://schema.phpunit.de/coverage/1.0',
@@ -72,16 +84,5 @@ abstract class Node
         $this->getContextNode()->appendChild($fileNode);
 
         return new File($fileNode);
-    }
-
-    protected function setContextNode(\DOMElement $context): void
-    {
-        $this->dom         = $context->ownerDocument;
-        $this->contextNode = $context;
-    }
-
-    protected function getContextNode(): \DOMElement
-    {
-        return $this->contextNode;
     }
 }

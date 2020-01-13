@@ -5,6 +5,7 @@ namespace RDStation\Helpers;
 use Psr\Http\Message\ResponseInterface;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
+use RDStation\Exception\JsonException;
 use GuzzleHttp\Client;
 
 class Request
@@ -22,7 +23,7 @@ class Request
      * @return array|mixed
      * @throws ContentTypeInvalid
      * @throws RequestFailed
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function get($endpoint) : array
     {
@@ -34,7 +35,7 @@ class Request
      * @return mixed
      * @throws ContentTypeInvalid
      * @throws RequestFailed
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function post($endpoint, array $data = []) : array
     {
@@ -45,7 +46,7 @@ class Request
      * @param array $data
      * @return array|mixed
      * @throws RequestFailed
-     * @throws \JsonException
+     * @throws JsonException
      * @throws ContentTypeInvalid
      */
     public function put($endpoint, array $data = []) : array
@@ -60,17 +61,20 @@ class Request
      * @return mixed
      * @throws ContentTypeInvalid
      * @throws RequestFailed
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function call($method, $endpoint, array $options = []) : array
     {
+
         $response = $this->httpClient->request($method, $endpoint, $options);
         $this->validateResponse($response);
         $content = $response->getBody()->getContents();
         $result = json_decode($content, true);
+
         if (json_last_error() != JSON_ERROR_NONE) {
-            throw new \JsonException();
+            throw new JsonException();
         }
+        
         return $result;
     }
     /**

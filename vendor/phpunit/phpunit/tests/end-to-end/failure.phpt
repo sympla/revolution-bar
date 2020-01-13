@@ -1,9 +1,10 @@
 --TEST--
-phpunit ../../_files/FailureTest.php
+phpunit FailureTest ../../_files/FailureTest.php
 --FILE--
-<?php declare(strict_types=1);
+<?php
 $_SERVER['argv'][1] = '--no-configuration';
-$_SERVER['argv'][2] = __DIR__ . '/../_files/FailureTest.php';
+$_SERVER['argv'][2] = 'FailureTest';
+$_SERVER['argv'][3] = __DIR__ . '/../_files/FailureTest.php';
 
 require __DIR__ . '/../bootstrap.php';
 PHPUnit\TextUI\Command::main();
@@ -25,7 +26,6 @@ Failed asserting that two arrays are equal.
  Array (
 -    0 => 1
 +    0 => 2
- )
 
 %s:%i
 
@@ -44,7 +44,6 @@ Failed asserting that two objects are equal.
  stdClass Object (
 -    'foo' => 'bar'
 +    'bar' => 'foo'
- )
 
 %s:%i
 
@@ -74,7 +73,6 @@ Failed asserting that two strings are equal.
  'foo\n
 -bar\n
 +baz\n
- '
 
 %s:%i
 
