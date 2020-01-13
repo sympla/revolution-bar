@@ -44,17 +44,33 @@ class Authorization
      */
     public function getAccessToken() : AuthorizationResponse
     {
-        $url = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
-        $parameters = [
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'code' => $this->code
-        ];
-
+        $url = $this->getUrlAuthorization();
+        $parameters = $this->getParameters();
 
         return $this->generateAuthorizationResponse(
             $this->getInstanceRequest()->post(sprintf('%s', $url), $parameters)
         );
+    }
+
+    /**
+     * @return string 
+     */
+    protected function getUrlAuthorization()
+    {
+        return BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function getParameters() : array
+    {
+        return [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'code' => $this->code
+        ];
     }
 
     /**
@@ -74,7 +90,7 @@ class Authorization
      * 
      * @return Request;
      */
-    public function getInstanceRequest() : Request
+    protected function getInstanceRequest() : Request
     {
         return new Request(
             new Client([

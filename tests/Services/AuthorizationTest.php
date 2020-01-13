@@ -5,6 +5,8 @@ declare(strict_types=1);
 use PHPUnit\Framework\MockObject\MockObject;
 use RDStation\Services\Authorization;
 use PHPUnit\Framework\TestCase;
+use RDStation\Configuration\Routes;
+use RDStation\Helpers\BuildUrl;
 use RDStation\Helpers\Request;
 use RDStation\Response\AuthorizationResponse;
 
@@ -54,7 +56,6 @@ class AuthorizationTest extends TestCase
         $authorization = $this->getMockAuthorizationTest();
         $authorization->method('getInstanceRequest')
             ->willReturn($request);
-
         
         /** @var AuthorizationResponse $accessToken */
         $accessToken = $authorization->getAccessToken();
@@ -64,9 +65,73 @@ class AuthorizationTest extends TestCase
         $this->assertEquals($expectedRefreshToken, $accessToken->getRefreshToken());
         $this->assertEquals($expectedExpireIn, $accessToken->getExpireIn());
     }
-    
-    private function getMockAuthorizationTest()
+
+    public function testMethodsProtectedAreCalled()
     {
+        $mockMethods = [
+            "getInstanceRequest",
+            "getUrlAuthorization",
+            "getParameters",
+            "generateAuthorizationResponse"
+        ];
+
+        /** @var Authorization|MockObject $authorization */
+        $authorization = $this->getMockAuthorizationTest($mockMethods);
+        $request = $this->getMockRequest();        
+        $request->method('post')
+            ->willReturn([
+                'access_token' => 'sfs',
+                'refresh_token' => '24',
+                'expires_in' => '242'
+            ]);
+
+        $authorization->expects($this->once())
+            ->method('getInstanceRequest')
+            ->willReturn($request);
+
+        $authorization->expects($this->once())
+            ->method("getUrlAuthorization");
+
+        $authorization->expects($this->once())
+            ->method("getParameters");
+        
+        $authorization->getAccessToken();
+    }
+
+
+    public function testeGetParameters()
+    {
+        $expectedClientId = "29342";
+        $expectedClientSecret = "28479284";
+        $expectedCode = "soiwurowir";
+        
+        $authorization = $this->getInstanceAuthorizationAccessAllMethods($expectedClientId, $expectedClientSecret, $expectedCode);
+        $parameters = $authorization->getParameters();
+        $this->assertNotEmpty($parameters['client_id']);
+        $this->assertNotEmpty($parameters['client_secret']);
+        $this->assertNotEmpty($parameters['code']);
+        $this->assertEquals($expectedClientId, $parameters['client_id']);
+        $this->assertEquals($expectedClientSecret, $parameters['client_secret']);
+        $this->assertEquals($expectedCode, $parameters['code']);
+    }
+
+    public function testGetInstanceRequest()
+    {
+        $authorization = $this->getInstanceAuthorizationAccessAllMethods("12489", "2984", "wiury");
+        $this->assertInstanceOf(Request::class, $authorization->getInstanceRequest());
+    }
+
+    public function testGetUrlBuilder()
+    {
+        $authorization = $this->getInstanceAuthorizationAccessAllMethods("12489", "2984", "wiury");
+        $expectedUrl = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
+        $this->assertEquals($expectedUrl, $authorization->getUrlAuthorization());
+    }
+    
+    private function getMockAuthorizationTest(array $mockMethods = [])
+    {
+
+        $mockMethods = $mockMethods ?: ['getInstanceRequest'];
         $mockAuthorization = $this->getMockBuilder(Authorization::class)
                 ->setConstructorArgs([
                     'clientId' => '2498724',
@@ -74,16 +139,25 @@ class AuthorizationTest extends TestCase
                     'code' => '29847298472'
                 ])
                 ->enableOriginalConstructor()
-                ->setMethods(['getInstanceRequest'])
+                ->setMethods($mockMethods)
                 ->getMock();         
                 
         return $mockAuthorization;
     }
 
-    private function getMockRequest(array $return)
+    private function getMockRequest()
     {
-
         return $this->createMock(Request::class);        
+    }
+
+    private function getInstanceAuthorizationAccessAllMethods($clientId, $clientSecret, $clientCode) : Authorization
+    {
+        return new class($clientId, $clientSecret, $clientCode) extends Authorization {
+            public function __call($name, $arguments)
+            {
+                return call_user_func_array([static::class, $name], $arguments);
+            }
+        };
     }
 
 }

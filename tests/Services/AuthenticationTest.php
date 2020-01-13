@@ -2,16 +2,9 @@
 
 declare(strict_types=1);
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\MockObject\MockBuilder;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RDStation\Configuration\Routes;
-use RDStation\Exception\InvalidRouteException;
-use RDStation\Exception\RequestFailed;
 use RDStation\Helpers\BuildUrl;
-use RDStation\Helpers\Request;
 use RDStation\Services\Authentication;
 
 class AuthenticationTest extends TestCase
