@@ -105,7 +105,7 @@ class Authorization
     }
 
     /**
-     * 
+     *
      * @return Request;
      */
     protected function getInstanceRequest() : Request

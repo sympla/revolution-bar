@@ -1,6 +1,5 @@
 <?php
 
-
 namespace RDStation\Exception;
 
 use Exception;
