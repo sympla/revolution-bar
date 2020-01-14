@@ -18,6 +18,7 @@ class Request
     {
         $this->httpClient = $client;
     }
+
     /**
      * @param $endpoint
      * @return array|mixed
@@ -25,7 +26,7 @@ class Request
      * @throws RequestFailed
      * @throws JsonException
      */
-    public function get($endpoint) : array
+    public function get($endpoint): array
     {
         return $this->call('GET', $endpoint);
     }
@@ -37,7 +38,7 @@ class Request
      * @throws RequestFailed
      * @throws JsonException
      */
-    public function post($endpoint, array $data = []) : array
+    public function post($endpoint, array $data = []): array
     {
         return $this->call('POST', $endpoint, ['json' => $data]);
     }
@@ -49,7 +50,7 @@ class Request
      * @throws JsonException
      * @throws ContentTypeInvalid
      */
-    public function put($endpoint, array $data = []) : array
+    public function put($endpoint, array $data = []): array
     {
         return $this->call('PUT', $endpoint, ['json' => $data]);
     }
@@ -62,7 +63,7 @@ class Request
      * @throws RequestFailed
      * @throws JsonException
      */
-    public function call($method, $endpoint, array $options = []) : array
+    public function call($method, $endpoint, array $options = []): array
     {
 
         $response = $this->httpClient->request($method, $endpoint, $options);

@@ -16,7 +16,7 @@ class BuildUrl
      * @throws InvalidRouteException
      * @throws ReflectionException
      */
-    public static function getUrlByRoute(string $route) : string
+    public static function getUrlByRoute(string $route): string
     {
         if (! static::routeExists($route)) {
             throw new InvalidRouteException("Invalid route: " . $route);
@@ -30,7 +30,7 @@ class BuildUrl
      * @throws ReflectionException
      * @throws ReflectionException
      */
-    private static function routeExists(string $route) : bool
+    private static function routeExists(string $route): bool
     {
         $reflection = new ReflectionClass(Routes::class);
         foreach ($reflection->getConstants() as $constant) {

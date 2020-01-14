@@ -58,7 +58,7 @@ class Authorization
      * @throws InvalidRouteException
      * @throws ReflectionException
      */
-    public function getAccessToken() : AuthorizationResponse
+    public function getAccessToken(): AuthorizationResponse
     {
         $url = $this->getUrlAuthorization();
         $parameters = $this->getParameters();
@@ -82,7 +82,7 @@ class Authorization
     /**
      * @return array
      */
-    protected function getParameters() : array
+    protected function getParameters(): array
     {
         return [
             'client_id' => $this->clientId,
@@ -95,7 +95,7 @@ class Authorization
      * @param  array $response
      * @return AuthorizationResponse
      */
-    protected function generateAuthorizationResponse(array $response) : AuthorizationResponse
+    protected function generateAuthorizationResponse(array $response): AuthorizationResponse
     {
         return new AuthorizationResponse(
             $response['access_token'],
@@ -108,7 +108,7 @@ class Authorization
      *
      * @return Request;
      */
-    protected function getInstanceRequest() : Request
+    protected function getInstanceRequest(): Request
     {
         return new Request(
             new Client(

@@ -42,7 +42,7 @@ class Authentication
      * @throws InvalidRouteException
      * @throws ReflectionException
      */
-    public function getUrlAuthentication() : string
+    public function getUrlAuthentication(): string
     {
         $url = BuildUrl::getUrlByRoute(Routes::AUTHENTICATION);
         $parameters = [
