@@ -3,8 +3,9 @@
 
 namespace RDStation\Exception;
 
+use Exception;
 
-class InvalidRouteException extends \Exception
+class InvalidRouteException extends Exception
 {
 
 }

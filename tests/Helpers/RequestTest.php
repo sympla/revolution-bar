@@ -14,7 +14,7 @@ use RDStation\Exception\RequestFailed;
 class RequestTest extends TestCase
 {
     /**
-     * @return Client
+     * @return MockObject
      */
     private function getMockGuzzle()
     {    

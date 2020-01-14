@@ -1,28 +1,44 @@
 <?php
+
 namespace RDStation\Services;
 
 use RDStation\Configuration\Routes;
 use RDStation\Exception\ContentTypeInvalid;
+use RDStation\Exception\JsonException;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
 use RDStation\Helpers\Request;
 use RDStation\Helpers\BuildUrl;
 use GuzzleHttp\Client;
+use RDStation\Exception\InvalidRouteException;
+use ReflectionException;
 
+/**
+ * Class Authorization
+ *
+ * @package RDStation\Services
+ */
 class Authorization
 {
 
-    /** @var string $clientId */
+    /**
+     * @var string $clientId
+     */
     protected $clientId;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $code;
 
-    /** @var string $clientSecret */
+    /**
+     * @var string $clientSecret
+     */
     private $clientSecret;
 
     /**
      * Authentication constructor.
+     *
      * @param string $clientId
      * @param string $clientSecret
      * @param string $code
@@ -36,11 +52,11 @@ class Authorization
 
     /**
      * @return AuthorizationResponse
-     * @throws \JsonException
      * @throws ContentTypeInvalid
+     * @throws JsonException
      * @throws RequestFailed
-     * @throws ContentTypeInvalid
-     * @throws \RDStation\Exception\InvalidRouteException
+     * @throws InvalidRouteException
+     * @throws ReflectionException
      */
     public function getAccessToken() : AuthorizationResponse
     {
@@ -53,7 +69,9 @@ class Authorization
     }
 
     /**
-     * @return string 
+     * @return string
+     * @throws InvalidRouteException
+     * @throws ReflectionException
      */
     protected function getUrlAuthorization()
     {
@@ -74,7 +92,7 @@ class Authorization
     }
 
     /**
-     * @param array $response
+     * @param  array $response
      * @return AuthorizationResponse
      */
     protected function generateAuthorizationResponse(array $response) : AuthorizationResponse
@@ -93,12 +111,14 @@ class Authorization
     protected function getInstanceRequest() : Request
     {
         return new Request(
-            new Client([
-                'verify' => false,
-                'connect_timeout' => 6,
-                'timeout' => 0,
-                'headers' => []
-            ])
+            new Client(
+                [
+                    'verify' => false,
+                    'connect_timeout' => 6,
+                    'timeout' => 0,
+                    'headers' => []
+                ]
+            )
         );
     }
 }

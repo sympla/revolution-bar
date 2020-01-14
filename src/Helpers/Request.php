@@ -11,7 +11,7 @@ use GuzzleHttp\Client;
 class Request
 {
     /**
-     * @var \GuzzleHttp\Client
+     * @var Client
      */
     private $httpClient;
     public function __construct(Client $client)
@@ -59,7 +59,6 @@ class Request
      * @param $endpoint
      * @param array $options
      * @return mixed
-     * @throws ContentTypeInvalid
      * @throws RequestFailed
      * @throws JsonException
      */
@@ -79,7 +78,6 @@ class Request
     }
     /**
      * @param ResponseInterface $response
-     * @throws ContentTypeInvalid
      * @throws RequestFailed
      */
     private function validateResponse(ResponseInterface $response)

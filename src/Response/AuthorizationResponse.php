@@ -5,20 +5,27 @@ namespace RDStation\Response;
 class AuthorizationResponse
 {
 
-    /** @var string $accessToken */
+    /**
+     * @var string $accessToken
+     */
     private $accessToken;
 
-    /** @var string $refreshToken */
+    /**
+     * @var string $refreshToken
+     */
     private $refreshToken;
 
-    /** @var int $expireIn */
+    /**
+     * @var int $expireIn
+     */
     private $expireIn;
 
     /**
      * AuthenticateResponse constructor.
+     *
      * @param string $accessToken
      * @param string $refreshToken
-     * @param int $expireIn
+     * @param int    $expireIn
      */
     public function __construct(string $accessToken, string $refreshToken, int $expireIn)
     {

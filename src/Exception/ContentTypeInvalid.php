@@ -3,7 +3,8 @@
 
 namespace RDStation\Exception;
 
+use \Exception;
 
-class ContentTypeInvalid extends \Exception
+class ContentTypeInvalid extends Exception
 {
 }

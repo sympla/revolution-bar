@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use RDStation\Configuration\Http;
 use RDStation\Exception\JsonException as ExceptionJsonException;
 
-class JsonException extends TestCase 
+class JsonExceptionTest extends TestCase
 {
 
     public function testExceptionWithParameters()
