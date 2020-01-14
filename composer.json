@@ -1,0 +1,24 @@
+{
+    "name": "itallocosta/revolution-bar",
+    "description": "Sdk para integração SDK RdStation",
+    "minimum-stability": "dev",
+    "version": "0.0.1",
+    "require": {
+        "php": ">=7.0",
+        "guzzlehttp/guzzle": "~6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "RDStation\\": "src/"
+        }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.0@dev",
+        "phpunit/phpunit": "^6.5"
+    },
+    "config": {
+        "platform": {
+            "php": "7.0"
+        }
+    }
+}
