@@ -7,23 +7,18 @@ use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\JsonException;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
-use RDStation\Helpers\Request;
 use RDStation\Helpers\BuildUrl;
 use GuzzleHttp\Client;
 use RDStation\Exception\InvalidRouteException;
 use ReflectionException;
+use RDStation\Services\Treats\InstanceRequest;
 
-/**
- * Class Authorization
- *
- * @package RDStation\Services
- */
 class Authorization
 {
 
-    /**
-     * @var string $clientId
-     */
+    use InstanceRequest;
+
+    /** @var string $clientId */
     protected $clientId;
 
     /**
@@ -101,24 +96,6 @@ class Authorization
             $response['access_token'],
             $response['refresh_token'],
             $response['expires_in']
-        );
-    }
-
-    /**
-     *
-     * @return Request;
-     */
-    protected function getInstanceRequest(): Request
-    {
-        return new Request(
-            new Client(
-                [
-                    'verify' => false,
-                    'connect_timeout' => 6,
-                    'timeout' => 0,
-                    'headers' => []
-                ]
-            )
         );
     }
 }
