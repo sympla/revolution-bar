@@ -4,54 +4,57 @@ declare(strict_types=1);
 namespace Request;
 
 use RDStation\Exception\IncorrectTypeException;
-use RDStation\Request\Contact;
+use RDStation\Request\ContactRequest;
 use PHPUnit\Framework\TestCase;
 use RDStation\Request\ContactIdentifier;
 
 
-class ContactTest extends TestCase
+class ContactRequestTest extends TestCase
 {
 
     public function testConstructSuccess()
     {
-        $expectedInstanceClass = Contact::class;
+        $expectedInstanceClass = ContactRequest::class;
         $extraFields = ['Evento' => "Planeta Brasil"];
-        $this->assertInstanceOf($expectedInstanceClass, new Contact(ContactIdentifier::EMAIL, []));
-        $this->assertInstanceOf($expectedInstanceClass, new Contact(ContactIdentifier::UUID, []));
-        $this->assertInstanceOf($expectedInstanceClass, new Contact(ContactIdentifier::EMAIL, $extraFields));
-        $this->assertInstanceOf($expectedInstanceClass, new Contact(ContactIdentifier::UUID, $extraFields));
+        $this->assertInstanceOf($expectedInstanceClass, new ContactRequest(ContactIdentifier::EMAIL, []));
+        $this->assertInstanceOf($expectedInstanceClass, new ContactRequest(ContactIdentifier::UUID, []));
+        $this->assertInstanceOf($expectedInstanceClass, new ContactRequest(ContactIdentifier::EMAIL, $extraFields));
+        $this->assertInstanceOf($expectedInstanceClass, new ContactRequest(ContactIdentifier::UUID, $extraFields));
 
         $reflectionContactIdentifier = new \ReflectionClass(ContactIdentifier::class);
         foreach ($reflectionContactIdentifier->getConstants() as $constantValue) {
-            $this->assertInstanceOf($expectedInstanceClass, new Contact($constantValue, []));
+            $this->assertInstanceOf($expectedInstanceClass, new ContactRequest($constantValue, []));
         }
     }
 
     public function testConstructorFailed()
     {
         $this->expectException(IncorrectTypeException::class);
-        new Contact('SYMPLA', []);
-        new Contact('SYMPLA', ['EVENTO' => 'NETFLIX']);
+        new ContactRequest('SYMPLA', []);
+        new ContactRequest('SYMPLA', ['EVENTO' => 'NETFLIX']);
     }
 
     public function testGetAndSetters()
     {
         $extraFields = ['EVENTO' => 'NETFLIX', 'DATA_HORA' => date('Y-m-d')];
-        $contactRequestEmail = new Contact(ContactIdentifier::EMAIL, $extraFields);
+        $contactRequestEmail = new ContactRequest(ContactIdentifier::EMAIL, $extraFields);
+        $expectedValue = $this->getExpectedsValuesSuccess();
 
-        foreach ($this->getExpectedsValuesSuccess() as $name => $expectedValue) {
-            call_user_func([$contactRequestEmail, 'set' . $this->normalizeNameMethod($name)], $expectedValue);
+        foreach ($expectedValue as $name => $value) {
+            call_user_func([$contactRequestEmail, 'set' . $this->normalizeNameMethod($name)], $value);
             $this->assertEquals(
-                $expectedValue,
+                $value,
                 call_user_func([$contactRequestEmail, 'get' . $this->normalizeNameMethod($name)], [])
             );
         }
 
         $this->assertEquals($extraFields, $contactRequestEmail->getExtraFields());
         $this->assertEquals(ContactIdentifier::EMAIL, $contactRequestEmail->getIdentifier());
+        unset($expectedValue['email'], $expectedValue['uuid']);
+
 
         $this->assertEquals(
-            array_merge($this->getExpectedsValuesSuccess(), $extraFields),
+            array_merge($expectedValue, $extraFields),
             $contactRequestEmail->toArray()
         );
 
@@ -61,7 +64,7 @@ class ContactTest extends TestCase
     public function testGetAndSettersFailed(): array
     {
         $extraFields = ['EVENTO' => 'NETFLIX', 'DATA_HORA' => date('Y-m-d')];
-        $contactRequestEmail = new Contact(ContactIdentifier::EMAIL, $extraFields);
+        $contactRequestEmail = new ContactRequest(ContactIdentifier::EMAIL, $extraFields);
 
 
         $this->expectException(IncorrectTypeException::class);
@@ -86,7 +89,9 @@ class ContactTest extends TestCase
             'state' => 'Minas Gerais',
             'country' => 'Brasil',
             'tags' => ['evento', 'show'],
-            'extra_emails' => ['sympla@sympla.com', 'teste@sympla.com']
+            'facebook' => 'facebook',
+            'twitter' => 'twitter',
+            'mobile_phone' => '(31)980209050',
         ];
     }
 
@@ -112,7 +117,7 @@ class ContactTest extends TestCase
     {
         $this->expectException(\Exception::class);
 
-        $contact = new Contact(ContactIdentifier::EMAIL, []);
+        $contact = new ContactRequest(ContactIdentifier::EMAIL, []);
         $contact->toArray();
     }
 
@@ -121,7 +126,7 @@ class ContactTest extends TestCase
     {
         $this->expectException(\Exception::class);
 
-        $contact = new Contact(ContactIdentifier::UUID, []);
+        $contact = new ContactRequest(ContactIdentifier::UUID, []);
         $contact->toArray();
     }
 
@@ -132,7 +137,7 @@ class ContactTest extends TestCase
 
     private function getInstanceClassWithEmailValidatePublic()
     {
-        return new class(ContactIdentifier::EMAIL, []) extends Contact {
+        return new class(ContactIdentifier::EMAIL, []) extends ContactRequest {
             public function emailValidate(string $email)
             {
                 parent::emailValidate($email);

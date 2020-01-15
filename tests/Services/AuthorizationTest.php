@@ -44,7 +44,7 @@ class AuthorizationTest extends TestCase
             ->willReturn($request);
         
         /** @var AuthorizationResponse $accessToken */
-        $accessToken = $authorization->getAccessToken();
+        $accessToken = $authorization->execute();
 
         $this->assertInstanceOf(AuthorizationResponse::class, $accessToken);
         $this->assertEquals($expectedAccessToken, $accessToken->getAccessToken());
@@ -81,7 +81,7 @@ class AuthorizationTest extends TestCase
         $authorization->expects($this->once())
             ->method("getParameters");
         
-        $authorization->getAccessToken();
+        $authorization->execute();
     }
 
 

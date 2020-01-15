@@ -8,7 +8,7 @@ use RDStation\Exception\InvalidRouteException;
 use RDStation\Exception\JsonException;
 use RDStation\Exception\RequestFailed;
 use RDStation\Helpers\Request;
-use RDStation\Request\Contact as ContactRequest;
+use RDStation\Request\ContactRequest as ContactRequest;
 use RDStation\Request\ContactIdentifier;
 use RDStation\Services\Traits\InstanceRequest;
 

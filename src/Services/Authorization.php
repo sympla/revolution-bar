@@ -31,19 +31,6 @@ class Authorization extends AuthorizationAbstract
     }
 
     /**
-     * @return AuthorizationResponse
-     * @throws ContentTypeInvalid
-     * @throws JsonException
-     * @throws RequestFailed
-     * @throws InvalidRouteException
-     * @throws ReflectionException
-     */
-    public function getAccessToken(): AuthorizationResponse
-    {
-        return $this->execute();
-    }
-
-    /**
      * @return array
      */
     protected function getParameters(): array

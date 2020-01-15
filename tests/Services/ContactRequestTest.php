@@ -8,7 +8,7 @@ use RDStation\Helpers\Request;
 use RDStation\Request\ContactIdentifier;
 use RDStation\Services\Contact;
 use PHPUnit\Framework\TestCase;
-use RDStation\Request\Contact as ContactRequest;
+use RDStation\Request\ContactRequest as ContactRequest;
 
 
 class ContactTest extends TestCase

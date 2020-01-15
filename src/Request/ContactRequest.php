@@ -5,9 +5,8 @@ namespace RDStation\Request;
 use RDStation\Exception\IncorrectTypeException;
 use Exception;
 
-class Contact
+class ContactRequest
 {
-
     /** @var string $uuid */
     protected $uuid;
 
@@ -44,17 +43,19 @@ class Contact
     /** @var string $tags */
     protected $tags;
 
-    /** @var string $extraEmails */
-    protected $extraEmails;
+    /** @var string $facebook */
+    protected $facebook;
 
-    /**
-     * @var array $extraFields
-     */
+    /** @var string $twitter */
+    protected $twitter;
+
+    /** @var string $mobilePhone */
+    protected $mobilePhone;
+
+    /** @var array $extraFields */
     protected $extraFields = [];
 
-    /**
-     * @var string $indentifier
-     */
+    /** @var string $indentifier */
     protected $identifier;
 
     /**
@@ -286,6 +287,54 @@ class Contact
     }
 
     /**
+     * @return string
+     */
+    public function getFacebook()
+    {
+        return $this->facebook;
+    }
+
+    /**
+     * @param string $facebook
+     */
+    public function setFacebook(string $facebook)
+    {
+        $this->facebook = $facebook;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTwitter()
+    {
+        return $this->twitter;
+    }
+
+    /**
+     * @param string $twitter
+     */
+    public function setTwitter(string $twitter)
+    {
+        $this->twitter = $twitter;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMobilePhone()
+    {
+        return $this->mobilePhone;
+    }
+
+    /**
+     * @param string $mobilePhone
+     */
+    public function setMobilePhone(string $mobilePhone)
+    {
+        $this->mobilePhone = $mobilePhone;
+    }
+
+    /**
      * @return array
      */
     public function getExtraFields()
@@ -329,10 +378,9 @@ class Contact
             throw new \Exception("The identifier value is empty.");
         }
 
+
         $defaultFields = [
-            'uuid' => $this->getUuid(),
             'name' => $this->getName(),
-            'email' => $this->getEmail(),
             'job_title' => $this->getJobTitle(),
             'bio' => $this->getBio(),
             'website' => $this->getWebsite(),
@@ -342,7 +390,9 @@ class Contact
             'state' => $this->getState(),
             'country' => $this->getCountry(),
             'tags' => $this->getTags(),
-            'extra_emails' => $this->getExtraEmails()
+            'facebook' => $this->getFacebook(),
+            'twitter' => $this->getTwitter(),
+            'mobile_phone' => $this->getMobilePhone(),
         ];
 
         return array_merge($defaultFields, $this->extraFields);
