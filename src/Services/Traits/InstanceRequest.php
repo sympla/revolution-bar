@@ -1,8 +1,6 @@
 <?php
 
-
 namespace RDStation\Services\Traits;
-
 
 use GuzzleHttp\Client;
 use RDStation\Helpers\Request;
@@ -14,7 +12,7 @@ trait InstanceRequest
      * @param array $headers
      * @return Request;
      */
-    protected function getInstanceRequest(array $headers = []) : Request
+    protected function getInstanceRequest(array $headers = []): Request
     {
         return new Request(
             new Client([

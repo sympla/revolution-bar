@@ -4,15 +4,16 @@ namespace RDStation\Services;
 
 use RDStation\Configuration\Routes;
 use RDStation\Exception\ContentTypeInvalid;
+use RDStation\Exception\InvalidRouteException;
 use RDStation\Exception\JsonException;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
 use RDStation\Helpers\BuildUrl;
 use RDStation\Services\Traits\InstanceRequest;
+use ReflectionException;
 
 class Authorization
 {
-
     use InstanceRequest;
 
     /** @var string $clientId */

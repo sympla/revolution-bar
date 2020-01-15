@@ -65,7 +65,7 @@ class Request
      * @throws JsonException
      * @throws RequestFailed
      */
-    public function patch($endpoint, array $data = []) : array
+    public function patch($endpoint, array $data = []): array
     {
         return $this->call('PATCH', $endpoint, ['json' => $data]);
     }
@@ -79,7 +79,7 @@ class Request
      * @throws RequestFailed
      * @throws JsonException
      */
-    protected function call($method, $endpoint, array $options = []) : array
+    protected function call($method, $endpoint, array $options = []): array
     {
 
         $response = $this->httpClient->request($method, $endpoint, $options);
@@ -105,6 +105,4 @@ class Request
             throw new RequestFailed();
         }
     }
-
-
 }

@@ -14,7 +14,6 @@ use RDStation\Services\Traits\InstanceRequest;
 
 class Contact
 {
-
     use InstanceRequest;
 
     /**
@@ -59,6 +58,7 @@ class Contact
      * @return string
      * @throws IncorrectTypeException
      * @throws InvalidRouteException
+     * @throws \ReflectionException
      */
     protected function getUrlContactUpsert()
     {
@@ -69,7 +69,7 @@ class Contact
      * @return string
      * @throws IncorrectTypeException
      */
-    protected function getIdentifierValue() : string
+    protected function getIdentifierValue(): string
     {
         $identifiers = [
             ContactIdentifier::EMAIL => $this->contactRequest->getEmail(),
@@ -86,7 +86,7 @@ class Contact
     /**
      * @return Request
      */
-    protected function createRequest() : Request
+    protected function createRequest(): Request
     {
         return $this->getInstanceRequest([
             'Authorization' => $this->accessToken

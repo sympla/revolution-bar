@@ -1,6 +1,5 @@
 <?php
 
-
 namespace RDStation\Request;
 
 use RDStation\Exception\IncorrectTypeException;
@@ -281,7 +280,7 @@ class Contact
     /**
      * @param string $uuid
      */
-    public function setUuid(string  $uuid)
+    public function setUuid(string $uuid)
     {
         $this->uuid = $uuid;
     }
@@ -324,7 +323,7 @@ class Contact
      * @return array
      * @throws \Exception
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         if (!$this->validateIfIdentifierWasInformed()) {
             throw new \Exception("The identifier value is empty.");
@@ -360,14 +359,14 @@ class Contact
         }
     }
 
-    protected function validateIfIdentifierWasInformed()
+    protected function validateIfIdentifierWasInformed(): bool
     {
         $validateRules = [
-            ContactIdentifier::EMAIL => function() {
+            ContactIdentifier::EMAIL => function () {
                 return !empty($this->getEmail());
             },
 
-            ContactIdentifier::UUID => function() {
+            ContactIdentifier::UUID => function () {
                 return !empty($this->getUuid());
             }
         ];
