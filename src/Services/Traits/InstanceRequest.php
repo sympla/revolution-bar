@@ -1,7 +1,7 @@
 <?php
 
 
-namespace RDStation\Services\Treats;
+namespace RDStation\Services\Traits;
 
 
 use GuzzleHttp\Client;

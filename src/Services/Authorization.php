@@ -8,10 +8,7 @@ use RDStation\Exception\JsonException;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
 use RDStation\Helpers\BuildUrl;
-use GuzzleHttp\Client;
-use RDStation\Exception\InvalidRouteException;
-use ReflectionException;
-use RDStation\Services\Treats\InstanceRequest;
+use RDStation\Services\Traits\InstanceRequest;
 
 class Authorization
 {

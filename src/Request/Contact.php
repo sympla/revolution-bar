@@ -4,8 +4,9 @@
 namespace RDStation\Request;
 
 use RDStation\Exception\IncorrectTypeException;
+use Exception;
 
-class Contact implements \JsonSerializable
+class Contact
 {
 
     /** @var string $uuid */
@@ -47,17 +48,32 @@ class Contact implements \JsonSerializable
     /** @var string $extraEmails */
     protected $extraEmails;
 
+    /**
+     * @var array $extraFields
+     */
     protected $extraFields = [];
 
-    public function __construct(array $extraFields = [])
+    /**
+     * @var string $indentifier
+     */
+    protected $identifier;
+
+    /**
+     * Contact constructor.
+     * @param string $identifier email|uuid
+     * @param array $extraFields
+     * @throws IncorrectTypeException
+     */
+    public function __construct(string $identifier = ContactIdentifier::EMAIL, array $extraFields = [])
     {
         $this->extraFields = $extraFields;
+        $this->setIdentifier($identifier);
     }
 
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -73,7 +89,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getEmail()
     {
         return $this->email;
     }
@@ -91,7 +107,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getJobTitle(): string
+    public function getJobTitle()
     {
         return $this->jobTitle;
     }
@@ -107,7 +123,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getBio(): string
+    public function getBio()
     {
         return $this->bio;
     }
@@ -123,7 +139,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getWebsite(): string
+    public function getWebsite()
     {
         return $this->website;
     }
@@ -144,7 +160,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getLinkedin(): string
+    public function getLinkedin()
     {
         return $this->linkedin;
     }
@@ -160,7 +176,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getPersonalPhone(): string
+    public function getPersonalPhone()
     {
         return $this->personalPhone;
     }
@@ -176,7 +192,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getCity(): string
+    public function getCity()
     {
         return $this->city;
     }
@@ -192,7 +208,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getState(): string
+    public function getState()
     {
         return $this->state;
     }
@@ -208,7 +224,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getCountry(): string
+    public function getCountry()
     {
         return $this->country;
     }
@@ -224,7 +240,7 @@ class Contact implements \JsonSerializable
     /**
      * @return array
      */
-    public function getTags(): array
+    public function getTags()
     {
         return $this->tags;
     }
@@ -240,7 +256,7 @@ class Contact implements \JsonSerializable
     /**
      * @return array
      */
-    public function getExtraEmails(): array
+    public function getExtraEmails()
     {
         return $this->extraEmails;
     }
@@ -257,7 +273,7 @@ class Contact implements \JsonSerializable
     /**
      * @return string
      */
-    public function getUuid() : string
+    public function getUuid()
     {
         return $this->uuid;
     }
@@ -273,30 +289,61 @@ class Contact implements \JsonSerializable
     /**
      * @return array
      */
-    public function getExtraFields(): array
+    public function getExtraFields()
     {
         return $this->extraFields;
     }
 
     /**
-     * @see https://www.php.net/manual/pt_BR/jsonserializable.jsonserialize.php
-     * @return array|mixed
+     * @return string
      */
-    public function jsonSerialize()
+    public function getIdentifier(): string
     {
+        return $this->identifier;
+    }
+
+    /**
+     * @param string $identifier
+     * @throws IncorrectTypeException
+     */
+    protected function setIdentifier(string $identifier)
+    {
+        $identifiersValid = ContactIdentifier::getIdentifiersValid();
+        if (!in_array($identifier, $identifiersValid)) {
+            $message = sprintf(
+                "Sent identifier value is not valid. The valid values are: %s",
+                implode(",", $identifiersValid)
+            );
+            throw new IncorrectTypeException($message);
+        }
+
+        $this->identifier = $identifier;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function toArray() : array
+    {
+        if (!$this->validateIfIdentifierWasInformed()) {
+            throw new \Exception("The identifier value is empty.");
+        }
+
         $defaultFields = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'job_title' => $this->jobTitle,
-            'bio' => $this->bio,
-            'website' => $this->website,
-            'linkedin' => $this->linkedin,
-            'personal_phone' => $this->personalPhone,
-            'city' => $this->city,
-            'state' => $this->state,
-            'country' => $this->country,
-            'tags' => $this->tags,
-            'extra_emails' => $this->extraEmails
+            'uuid' => $this->getUuid(),
+            'name' => $this->getName(),
+            'email' => $this->getEmail(),
+            'job_title' => $this->getJobTitle(),
+            'bio' => $this->getBio(),
+            'website' => $this->getWebsite(),
+            'linkedin' => $this->getLinkedin(),
+            'personal_phone' => $this->getPersonalPhone(),
+            'city' => $this->getCity(),
+            'state' => $this->getState(),
+            'country' => $this->getCountry(),
+            'tags' => $this->getTags(),
+            'extra_emails' => $this->getExtraEmails()
         ];
 
         return array_merge($defaultFields, $this->extraFields);
@@ -311,5 +358,20 @@ class Contact implements \JsonSerializable
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new IncorrectTypeException("Not a valid email: " . $email);
         }
+    }
+
+    protected function validateIfIdentifierWasInformed()
+    {
+        $validateRules = [
+            ContactIdentifier::EMAIL => function() {
+                return !empty($this->getEmail());
+            },
+
+            ContactIdentifier::UUID => function() {
+                return !empty($this->getUuid());
+            }
+        ];
+
+        return call_user_func($validateRules[$this->getIdentifier()]);
     }
 }

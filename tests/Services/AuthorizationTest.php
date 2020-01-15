@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use PHPUnit\Framework\MockObject\MockObject;
 use RDStation\Services\Authorization;
 use PHPUnit\Framework\TestCase;
@@ -150,6 +148,9 @@ class AuthorizationTest extends TestCase
         return $this->createMock(Request::class);        
     }
 
+    /**
+     * @method getParameters()
+     */
     private function getInstanceAuthorizationAccessAllMethods($clientId, $clientSecret, $clientCode) : Authorization
     {
         return new class($clientId, $clientSecret, $clientCode) extends Authorization {
