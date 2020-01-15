@@ -2,32 +2,20 @@
 
 namespace RDStation\Services;
 
-use RDStation\Configuration\Routes;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\InvalidRouteException;
 use RDStation\Exception\JsonException;
 use RDStation\Exception\RequestFailed;
 use RDStation\Response\AuthorizationResponse;
-use RDStation\Helpers\BuildUrl;
-use RDStation\Services\Traits\InstanceRequest;
+use RDStation\Services\Contract\AuthorizationAbstract;
 use ReflectionException;
 
-class Authorization
+class Authorization extends AuthorizationAbstract
 {
-    use InstanceRequest;
-
-    /** @var string $clientId */
-    protected $clientId;
-
     /**
      * @var string
      */
     private $code;
-
-    /**
-     * @var string $clientSecret
-     */
-    private $clientSecret;
 
     /**
      * Authentication constructor.
@@ -39,8 +27,7 @@ class Authorization
     public function __construct(string $clientId, string $clientSecret, string $code)
     {
         $this->code    = $code;
-        $this->clientSecret = $clientSecret;
-        $this->clientId = $clientId;
+        parent::__construct($clientId, $clientSecret);
     }
 
     /**
@@ -53,24 +40,8 @@ class Authorization
      */
     public function getAccessToken(): AuthorizationResponse
     {
-        $url = $this->getUrlAuthorization();
-        $parameters = $this->getParameters();
-
-        return $this->generateAuthorizationResponse(
-            $this->getInstanceRequest()->post(sprintf('%s', $url), $parameters)
-        );
+        return $this->execute();
     }
-
-    /**
-     * @return string
-     * @throws InvalidRouteException
-     * @throws ReflectionException
-     */
-    protected function getUrlAuthorization()
-    {
-        return BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
-    }
-
 
     /**
      * @return array
@@ -82,18 +53,5 @@ class Authorization
             'client_secret' => $this->clientSecret,
             'code' => $this->code
         ];
-    }
-
-    /**
-     * @param  array $response
-     * @return AuthorizationResponse
-     */
-    protected function generateAuthorizationResponse(array $response): AuthorizationResponse
-    {
-        return new AuthorizationResponse(
-            $response['access_token'],
-            $response['refresh_token'],
-            $response['expires_in']
-        );
     }
 }
