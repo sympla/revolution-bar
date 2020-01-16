@@ -177,4 +177,48 @@ class RequestTest extends TestCase
         $request = $this->getInstanceRequest($mockGuzzle);
         $request->put('https://sympla.com.br', []);
     }
+
+    public function testRequestPatchSuccess()
+    {
+        $expectedReturn = [
+            "foo" => "bar"
+        ];
+
+        /**
+         * @var Client $mockGuzzle
+         */
+        $mockGuzzle = $this->getMockGuzzle();
+        $response = new Response(200, [], json_encode($expectedReturn));
+        $mockGuzzle->method('request')
+            ->willReturn($response);
+
+        $request = $this->getInstanceRequest($mockGuzzle);
+        $responseRequest = $request->patch('https://sympla.com.br', ['param' => 2]);
+        $this->assertEquals($expectedReturn, $responseRequest);
+    }
+
+    public function testRequestPatchFailed()
+    {
+
+        $this->expectException(RequestFailed::class);
+
+        /**
+         * @var MockObject $mockGuzzle
+         */
+        $mockGuzzle = $this->getMockGuzzle();
+        $response = new Response(404, [], "NOT FOUND");
+        $mockGuzzle->method('request')
+            ->willReturn($response);
+
+        $request = $this->getInstanceRequest($mockGuzzle);
+        $request->patch('https://sympla.com.br', []);
+
+        $this->expectException(JsonException::class);
+        $response = new Response(200, [], "HTML");
+        $mockGuzzle->method('request')
+            ->willReturn($response);
+
+        $request = $this->getInstanceRequest($mockGuzzle);
+        $request->put('https://sympla.com.br', []);
+    }
 }

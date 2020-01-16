@@ -1,6 +1,5 @@
 <?php
-
-declare(strict_types=1);
+require_once dirname(__FILE__) . '/Trait/MockRequest.php';
 
 use PHPUnit\Framework\MockObject\MockObject;
 use RDStation\Services\Authorization;
@@ -12,6 +11,7 @@ use RDStation\Response\AuthorizationResponse;
 
 class AuthorizationTest extends TestCase
 {
+    use MockRequest;
 
     public function testContructorSuccess()
     {
@@ -36,21 +36,7 @@ class AuthorizationTest extends TestCase
         $expectedAccessToken = '24982749824';
         $expectedRefreshToken = 'flkskljr948274';
         $expectedExpireIn = '28472984728472';
-
-        $returnRequest = [
-            'access_token' => $expectedAccessToken,
-            'refresh_token' => $expectedRefreshToken,
-            'expires_in' => $expectedExpireIn
-        ];
-
-        $request = $this->getMockRequest($returnRequest);
-
-        $request->method('post')
-            ->willReturn([
-            'access_token' => $expectedAccessToken,
-            'refresh_token' => $expectedRefreshToken,
-            'expires_in' => $expectedExpireIn
-        ]);
+        $request = $this->getMockRequestPost($expectedAccessToken, $expectedRefreshToken, $expectedExpireIn);
 
         /** @var Authorization|MockObject $authorization */
         $authorization = $this->getMockAuthorizationTest();
@@ -58,7 +44,7 @@ class AuthorizationTest extends TestCase
             ->willReturn($request);
         
         /** @var AuthorizationResponse $accessToken */
-        $accessToken = $authorization->getAccessToken();
+        $accessToken = $authorization->execute();
 
         $this->assertInstanceOf(AuthorizationResponse::class, $accessToken);
         $this->assertEquals($expectedAccessToken, $accessToken->getAccessToken());
@@ -95,7 +81,7 @@ class AuthorizationTest extends TestCase
         $authorization->expects($this->once())
             ->method("getParameters");
         
-        $authorization->getAccessToken();
+        $authorization->execute();
     }
 
 
@@ -127,29 +113,28 @@ class AuthorizationTest extends TestCase
         $expectedUrl = BuildUrl::getUrlByRoute(Routes::AUTHORIZATION);
         $this->assertEquals($expectedUrl, $authorization->getUrlAuthorization());
     }
-    
-    private function getMockAuthorizationTest(array $mockMethods = [])
+
+    protected function getMockAuthorizationTest(array $mockMethods = [])
     {
 
         $mockMethods = $mockMethods ?: ['getInstanceRequest'];
         $mockAuthorization = $this->getMockBuilder(Authorization::class)
                 ->setConstructorArgs([
-                    'clientId' => '2498724',
+                    'client' => '2498724',
                     'clientSecret' => '24987242',
                     'code' => '29847298472'
                 ])
                 ->enableOriginalConstructor()
                 ->setMethods($mockMethods)
-                ->getMock();         
-                
+                ->getMock();
+
         return $mockAuthorization;
     }
 
-    private function getMockRequest()
-    {
-        return $this->createMock(Request::class);        
-    }
 
+    /**
+     * @method getParameters()
+     */
     private function getInstanceAuthorizationAccessAllMethods($clientId, $clientSecret, $clientCode) : Authorization
     {
         return new class($clientId, $clientSecret, $clientCode) extends Authorization {

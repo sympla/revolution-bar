@@ -30,6 +30,7 @@ class Request
     {
         return $this->call('GET', $endpoint);
     }
+
     /**
      * @param $endpoint
      * @param array $data
@@ -42,10 +43,11 @@ class Request
     {
         return $this->call('POST', $endpoint, ['json' => $data]);
     }
+
     /**
      * @param $endpoint
      * @param array $data
-     * @return array|mixed
+     * @return array
      * @throws RequestFailed
      * @throws JsonException
      * @throws ContentTypeInvalid
@@ -56,14 +58,28 @@ class Request
     }
 
     /**
+     * @param $endpoint
+     * @param array $data
+     * @return array
+     * @throws ContentTypeInvalid
+     * @throws JsonException
+     * @throws RequestFailed
+     */
+    public function patch($endpoint, array $data = []): array
+    {
+        return $this->call('PATCH', $endpoint, ['json' => $data]);
+    }
+
+    /**
      * @param $method
      * @param $endpoint
      * @param array $options
      * @return mixed
+     * @throws ContentTypeInvalid
      * @throws RequestFailed
      * @throws JsonException
      */
-    public function call($method, $endpoint, array $options = []): array
+    protected function call($method, $endpoint, array $options = []): array
     {
 
         $response = $this->httpClient->request($method, $endpoint, $options);
@@ -77,8 +93,10 @@ class Request
         
         return $result;
     }
+
     /**
      * @param ResponseInterface $response
+     * @throws ContentTypeInvalid
      * @throws RequestFailed
      */
     private function validateResponse(ResponseInterface $response)
