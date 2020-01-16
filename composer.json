@@ -2,7 +2,7 @@
     "name": "sympla/revolution-bar",
     "description": "Sdk para integração SDK RdStation",
     "minimum-stability": "dev",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "require": {
         "php": ">=7.0",
         "guzzlehttp/guzzle": "~6.2"
