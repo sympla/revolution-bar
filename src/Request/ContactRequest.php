@@ -254,23 +254,6 @@ class ContactRequest
     }
 
     /**
-     * @return array
-     */
-    public function getExtraEmails()
-    {
-        return $this->extraEmails;
-    }
-
-    /**
-     * @param array $extraEmails
-     */
-    public function setExtraEmails(array $extraEmails)
-    {
-        array_walk($extraEmails, [static::class, "emailValidate"]);
-        $this->extraEmails = $extraEmails;
-    }
-
-    /**
      * @return string
      */
     public function getUuid()
