@@ -40,11 +40,11 @@ Refreshing an expired token
 ````php
 require "vendor/autoload.php";
 
-$refreshToken = new RDStation\Services\RefreshToken("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET", "CODE_RDSTATION");
-$authorizationResponse = $refreshToken->execute();
-var_export($authorizationResponse->getAccessToken());
-var_export($authorizationResponse->getExpireIn());
-var_export($authorizationResponse->getRefreshToken());
+$refreshToken = new RDStation\Services\RefreshToken("YOUR_CLIENT_ID", "YOUR_CLIENT_SECRET", "REFRESH_TOKEN");
+$refreshTokenResponse = $refreshToken->execute();
+var_export($refreshTokenResponse->getAccessToken());
+var_export($refreshTokenResponse->getExpireIn());
+var_export($refreshTokenResponse->getRefreshToken());
 ````
 
 ### Send Contact
