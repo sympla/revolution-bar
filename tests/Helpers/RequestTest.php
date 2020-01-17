@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Request as GuzzleRequest;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -218,5 +220,25 @@ class RequestTest extends TestCase
 
         $request = $this->getInstanceRequest($mockGuzzle);
         $request->put('https://sympla.com.br', []);
+    }
+
+    public function testClientException()
+    {
+        $this->expectException(RequestFailed::class);
+
+        $clientException = new ClientException(
+            "Bad Request",
+            new GuzzleRequest("post", "https://sympla.com"),
+            new Response(400, [], "Bad Request")
+        );
+        /**
+         * @var MockObject $mockGuzzle
+         */
+        $mockGuzzle = $this->getMockGuzzle();
+        $mockGuzzle->method('request')
+            ->willThrowException($clientException);
+
+        $request = $this->getInstanceRequest($mockGuzzle);
+        $request->post('https://sympla.com.br', []);
     }
 }
