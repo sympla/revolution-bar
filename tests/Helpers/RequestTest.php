@@ -17,9 +17,7 @@ class RequestTest extends TestCase
      * @return MockObject
      */
     private function getMockGuzzle()
-    {    
- 
-
+    {
         return $this->createMock(Client::class);
     }
 

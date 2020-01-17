@@ -17,7 +17,7 @@ trait InstanceRequest
         return new Request(
             new Client([
                 'verify' => false,
-                'connect_timeout' => 6,
+                'connect_timeout' => 30,
                 'timeout' => 0,
                 'headers' => $headers
             ])
