@@ -42,7 +42,7 @@ class AuthorizationTest extends TestCase
         $authorization = $this->getMockAuthorizationTest();
         $authorization->method('getInstanceRequest')
             ->willReturn($request);
-        
+
         /** @var AuthorizationResponse $accessToken */
         $accessToken = $authorization->execute();
 

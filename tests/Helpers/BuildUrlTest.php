@@ -13,9 +13,14 @@ class BuildUrlTest extends TestCase
     public function testGetUrlByRouteSuccess()
     {
         $expectedUrlAuthentication = "https://api.rd.services/auth/dialog";
+        $expectedUrlAuthorization  = "https://api.rd.services/auth/token";
+        $expectedUrlRevokeToken    =  "https://api.rd.services/auth/revoke";
+        $expectedUrlContact        =  "https://api.rd.services/platform/contacts";
+
         $this->assertEquals($expectedUrlAuthentication, BuildUrl::getUrlByRoute(Routes::AUTHENTICATION));
-        $expectedUrlAuthorization = "https://api.rd.services/auth/token";
         $this->assertEquals($expectedUrlAuthorization, BuildUrl::getUrlByRoute(Routes::AUTHORIZATION));
+        $this->assertEquals($expectedUrlRevokeToken, BuildUrl::getUrlByRoute(Routes::REVOKING_TOKEN));
+        $this->assertEquals($expectedUrlContact, BuildUrl::getUrlByRoute(Routes::CONTACT));
     }
 
     public function testGetUrlByRouteWithRouteInvalidRoute()

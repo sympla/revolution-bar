@@ -79,3 +79,19 @@ $contactRequest->setWebsite("https://lead_website.com");
 $contact = new RDStation\Services\Contact($contactRequest, "YOUR_ACCESS_TOKEN");
 var_export($contact->save());
 ````
+
+### Revoking Access Token
+Client access with OAuth authentication type can be revoked whenever needed.
+This can be done using access_token or refresh_token.
+
+````php
+$revokingAccess = new \RDStation\Services\RevokingAccess("YOUR_ACCESS_TOKEN");
+var_export($revokingAccess->revoke());
+````
+
+Revoking refresh token 
+
+````php
+$revokingAccess = new \RDStation\Services\RevokingAccess("YOUR_ACCESS_TOKEN", "YOUR_REFRESH_TOKEN", "refresh_token");
+var_export($revokingAccess->revoke());
+````

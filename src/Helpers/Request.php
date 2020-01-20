@@ -2,6 +2,7 @@
 
 namespace RDStation\Helpers;
 
+use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
 use RDStation\Exception\ContentTypeInvalid;
 use RDStation\Exception\RequestFailed;
@@ -22,7 +23,6 @@ class Request
     /**
      * @param $endpoint
      * @return array|mixed
-     * @throws ContentTypeInvalid
      * @throws RequestFailed
      * @throws JsonException
      */
@@ -35,7 +35,6 @@ class Request
      * @param $endpoint
      * @param array $data
      * @return mixed
-     * @throws ContentTypeInvalid
      * @throws RequestFailed
      * @throws JsonException
      */
@@ -50,7 +49,6 @@ class Request
      * @return array
      * @throws RequestFailed
      * @throws JsonException
-     * @throws ContentTypeInvalid
      */
     public function put($endpoint, array $data = []): array
     {
@@ -61,7 +59,6 @@ class Request
      * @param $endpoint
      * @param array $data
      * @return array
-     * @throws ContentTypeInvalid
      * @throws JsonException
      * @throws RequestFailed
      */
@@ -75,34 +72,37 @@ class Request
      * @param $endpoint
      * @param array $options
      * @return mixed
-     * @throws ContentTypeInvalid
      * @throws RequestFailed
      * @throws JsonException
      */
     protected function call($method, $endpoint, array $options = []): array
     {
 
-        $response = $this->httpClient->request($method, $endpoint, $options);
-        $this->validateResponse($response);
-        $content = $response->getBody()->getContents();
-        $result = json_decode($content, true);
+        try {
+            $response = $this->httpClient->request($method, $endpoint, $options);
+            $this->validateResponse($response);
+            $content = $response->getBody()->getContents();
+            $result = json_decode($content, true);
 
-        if (json_last_error() != JSON_ERROR_NONE) {
-            throw new JsonException();
+            if (json_last_error() != JSON_ERROR_NONE) {
+                throw new JsonException();
+            }
+
+            return $result;
+        } catch (ClientException $clientException) {
+            $response = $clientException->getResponse();
+            throw new RequestFailed("Client Exception", $response->getStatusCode(), $response);
         }
-        
-        return $result;
     }
 
     /**
      * @param ResponseInterface $response
-     * @throws ContentTypeInvalid
      * @throws RequestFailed
      */
     private function validateResponse(ResponseInterface $response)
     {
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
-            throw new RequestFailed();
+            throw new RequestFailed("Request Failed", $response->getStatusCode(), $response);
         }
     }
 }

@@ -12,7 +12,8 @@ class RouteTest extends TestCase
         $expected = [
             'AUTHENTICATION' => "/auth/dialog",
             'AUTHORIZATION'  => '/auth/token',
-            'CONTACT'        => '/platform/contacts'
+            'CONTACT'        => '/platform/contacts',
+            'REVOKING_TOKEN' => '/auth/revoke'
         ];
 
         $reflectionHttp = new ReflectionClass(Routes::class);
