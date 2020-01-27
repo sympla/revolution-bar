@@ -57,7 +57,7 @@ class RevokingAccess
     public function revoke()
     {
         $request = $this->getInstanceRequest([
-            "Authorization" => "Bearer " . $this->token
+            "Authorization" => "Bearer " . $this->accessToken
         ]);
 
         return $request->post(
