@@ -150,7 +150,7 @@ class ContactRequest
      */
     public function setWebsite(string $website)
     {
-        if (!filter_var($website, FILTER_VALIDATE_URL)) {
+        if (!empty($website) && !filter_var($website, FILTER_VALIDATE_URL)) {
             throw new IncorrectTypeException("not a valid website");
         }
 
