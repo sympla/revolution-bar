@@ -40,7 +40,7 @@ class Request
      */
     public function post($endpoint, array $data = []): array
     {
-        return $this->call('POST', $endpoint, ['json' => $data]);
+        return $this->call('POST', $endpoint, ['form_params' => $data]);
     }
 
     /**
